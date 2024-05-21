@@ -45,7 +45,7 @@ const zetaInv = {
   forma : [[0,1,1],[1,1,0]],
   color : 'red'
 }
-
+//comentario cambiado
 const palo = {
   posicion : {x:ancho_lienzo/2,y:0},
   forma : [[0,0,0,0,0,0],[1,1,1,1,1,1]],
@@ -114,7 +114,7 @@ function draw(){
     tablero.forEach((fila,y)=>{//vale , esto no es lioso, simplemente el cambas el lugar de origen es el margen de arriba izquierdo el 0,0, entonces cuando recorremos el tablero lo recorremos bidimensionalmente primero cogiendo la y y despues cogiendo la x
       fila.forEach((valor,x)=>{
         if( valor ) {
-          contexto.fillStyle = 'yellow'
+          contexto.fillStyle = valor
           contexto.fillRect(x,y,1,1)  
         }
       })
@@ -180,10 +180,7 @@ const solidificar = () =>{//vale, la cosa es que como he cambiado lo de las coli
   pieza.forma.forEach((fila,y) =>{
     fila.forEach((valor,x)=> {
       if(valor === 1 ){
-        tablero[y+ pieza.posicion.y][x+pieza.posicion.x] = 1
-        contexto.fillStyle = pieza.color
-          contexto.fillRect(x,y,1,1)  
-        
+        tablero[y+ pieza.posicion.y][x+pieza.posicion.x] = pieza.color
       }
     })   
   })
@@ -192,7 +189,7 @@ const solidificar = () =>{//vale, la cosa es que como he cambiado lo de las coli
     pieza.posicion.y = 0
   
   //final del partido 
-  if(tablero[2].includes(1)){
+  if(tablero[2].some((value)=> value != 0)){//el metodo some comprueba alguna condicion
     window.alert("Game OVER SE FINI")
     tablero.forEach((fila) => fila.fill(0))
   }
