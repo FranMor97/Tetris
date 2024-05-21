@@ -246,7 +246,7 @@ for (let i = 0; i < pieza.forma[0].length ; i++ ){
 const formaAnterior = pieza.forma
 pieza.forma = piezaGirada
 
-
+//comentario idx
 
 if(checkColisiones()){
   pieza.forma = formaAnterior
