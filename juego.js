@@ -1,3 +1,8 @@
+//import {puntuacion} from mostrarCosas.js
+
+const puntuacionMostrar = document.querySelector("#tablaPuntuaciones") 
+const puntTotal = document.querySelector("#puntTotal")
+
 const lienzo = document.querySelector("canvas")
 const contexto = lienzo.getContext("2d")//en canvas se pueden tener y dibujar de varias formas 3d y demas en esta lo vamos a hacer con 2d
 
@@ -25,37 +30,44 @@ contexto.scale(tamanyo_bloque,tamanyo_bloque)//escala el tamaño respecto al ori
 const cuadrado ={
   posicion : {x:ancho_lienzo/2,y:0},
   forma : [[1,1],
-          [1,1]],//Esto aprovecha la posicion de los elementos en los arrays, por ejemplo aqui el primer el emento seria el [0][0] que literalmente coincide en como estamos moviendonos por el canvas
+          [1,1]],
+  color : 'green'        //Esto aprovecha la posicion de los elementos en los arrays, por ejemplo aqui el primer el emento seria el [0][0] que literalmente coincide en como estamos moviendonos por el canvas
 }
 
 const zeta = {
   posicion : {x:ancho_lienzo/2,y:0},
-  forma : [[1,1,0],[0,1,1]]
+  forma : [[1,1,0],[0,1,1]],
+  color : 'yellow'
 }
 
 const zetaInv = {
   posicion : {x:ancho_lienzo/2,y:0},
-  forma : [[0,1,1],[1,1,0]]
+  forma : [[0,1,1],[1,1,0]],
+  color : 'red'
 }
-
+//comentario cambiado
 const palo = {
   posicion : {x:ancho_lienzo/2,y:0},
-  forma : [[0,0,0,0,0,0],[1,1,1,1,1,1]]
+  forma : [[0,0,0,0,0,0],[1,1,1,1,1,1]],
+  color : 'blue'
 }
 
 const cruz ={
   posicion : {x:ancho_lienzo/2,y:0},
-  forma : [[0,1,0],[1,1,1]]
+  forma : [[0,1,0],[1,1,1]],
+  color : 'brown'
 }
 
 const caballo ={
   posicion : {x:ancho_lienzo/2,y:0},
-  forma :[ [1,1],[0,1],[0,1]]
+  forma :[ [1,1],[0,1],[0,1]],
+  color : 'orange'
 }
 
 const caballoInv ={
     posicion : {x:ancho_lienzo/2,y:0},
-    forma :[ [1,1],[1,0],[1,0]]
+    forma :[ [1,1],[1,0],[1,0]],
+    color : 'purple'
 }
 
 
@@ -102,7 +114,7 @@ function draw(){
     tablero.forEach((fila,y)=>{//vale , esto no es lioso, simplemente el cambas el lugar de origen es el margen de arriba izquierdo el 0,0, entonces cuando recorremos el tablero lo recorremos bidimensionalmente primero cogiendo la y y despues cogiendo la x
       fila.forEach((valor,x)=>{
         if( valor ) {
-          contexto.fillStyle ='yellow'
+          contexto.fillStyle = valor
           contexto.fillRect(x,y,1,1)  
         }
       })
@@ -112,12 +124,13 @@ function draw(){
     pieza.forma.forEach((fila,y)=>{
       fila.forEach((valor, x) =>{
         if(valor){
-          contexto.fillStyle = 'red'
+          contexto.fillStyle = pieza.color
           contexto.fillRect(x+pieza.posicion.x,y+pieza.posicion.y,1,1)//es dificil de entender sin dibujar, si no le sumasemos la x e y simplemente estariamos sobrepintando un mismo pixel
         }
       }) 
     })
 
+  
     
     
 }
@@ -140,14 +153,13 @@ document.addEventListener('keydown', event =>{
     }else{
       solidificar()
       eliminaLinea()
-      pieza = fichaLeatoria();
+     
     } 
   } 
   
   if(event.key ==='ArrowUp'){
-    console.log(pieza)
     gira()
-    console.log(pieza)
+    
   }
 })
 
@@ -168,7 +180,7 @@ const solidificar = () =>{//vale, la cosa es que como he cambiado lo de las coli
   pieza.forma.forEach((fila,y) =>{
     fila.forEach((valor,x)=> {
       if(valor === 1 ){
-        tablero[y+ pieza.posicion.y][x+pieza.posicion.x] = 1
+        tablero[y+ pieza.posicion.y][x+pieza.posicion.x] = pieza.color
       }
     })   
   })
@@ -177,7 +189,7 @@ const solidificar = () =>{//vale, la cosa es que como he cambiado lo de las coli
     pieza.posicion.y = 0
   
   //final del partido 
-  if(tablero[2].includes(1)){
+  if(tablero[2].some((value)=> value != 0)){//el metodo some comprueba alguna condicion
     window.alert("Game OVER SE FINI")
     tablero.forEach((fila) => fila.fill(0))
   }
@@ -193,12 +205,15 @@ const eliminaLinea = () =>{
   tablero.forEach((fila,y) =>{
     if(!fila.includes(0)){
       filasEliminar.push(y)
+      puntuacion =parseInt(puntuacion)  + 100
+      puntTotal.innerHTML = puntuacion
     }
   })
   filasEliminar.forEach((numFila) =>{
     tablero.splice(numFila,1)
     tablero.unshift([0,0,0,0,0,0,0,0,0,0,0,0,0,0])
   })
+
 }
 
 
@@ -219,24 +234,23 @@ const fichaBaja = () => {
 //Giramos la pieza
 
 const gira = () =>{
-  
   const piezaGirada =[]
-
 for (let i = 0; i < pieza.forma[0].length ; i++ ){
-  const partePieza = []
-  for(let j = pieza.length-1; j>= 0; j++ ){
-      partePieza.push(pieza.forma[j][i])
-  }
+     const partePieza = []
+    for(let j = pieza.forma.length-1; j >= 0; j-- ){
+        partePieza.push(pieza.forma[j][i])
+    }
   piezaGirada.push(partePieza)
 }
-pieza.forma = piezaGirada;
-/*pieza.forma = piezaGirada
+
+const formaAnterior = pieza.forma
+pieza.forma = piezaGirada
+
+//comentario idx
+
 if(checkColisiones()){
-  return formaAnterior
-}else{
-  //console.log(piezaGirada)
-  return piezaGirada
-}*/
+  pieza.forma = formaAnterior
+}
 }
 
 jugando()
