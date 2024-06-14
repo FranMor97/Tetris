@@ -1,0 +1,1 @@
+Para ejecutar el juego abra el archivo indice en el navegador.
